@@ -2,6 +2,7 @@
 
 * New features:
 * Bug fixes:
+  * Only render the passkey login button (and accept passkey logins) when "Enable passkeys" is turned on in Wordfence. Wordfence's own passkey authentication API does not check this setting. (#1)
 * Under the hood:
 
 #### 1.1.2 / 2026-08-12

@@ -289,11 +289,23 @@ class UltimateMember {
 	 */
 	private function passkey_api_available() {
 		$controller = '\\WordfenceLS\\Controller_Passkey';
-		return $this->is_wordfence_login_security_available()
-			&& class_exists( $controller )
-			&& method_exists( $controller, 'shared' )
-			&& method_exists( $controller::shared(), 'begin_login' )
-			&& method_exists( $controller::shared(), 'finish_and_authenticate_login' );
+		if ( ! $this->is_wordfence_login_security_available() || ! class_exists( $controller ) || ! method_exists( $controller, 'shared' ) ) {
+			return false;
+		}
+
+		$instance = $controller::shared();
+		if ( ! method_exists( $instance, 'begin_login' ) || ! method_exists( $instance, 'finish_and_authenticate_login' ) ) {
+			return false;
+		}
+
+		// Wordfence's finish_and_authenticate_login() does not consult the passkeys
+		// setting itself, so gate both the UI and the finish endpoint on it.
+		$settings = '\\WordfenceLS\\Controller_Settings';
+		if ( class_exists( $settings ) && method_exists( $settings, 'shared' ) && method_exists( $settings::shared(), 'are_passkeys_enabled' ) ) {
+			return (bool) $settings::shared()->are_passkeys_enabled();
+		}
+
+		return true;
 	}
 
 	/**
