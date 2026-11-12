@@ -3,7 +3,7 @@
 * New features:
 * Bug fixes:
 * Under the hood:
-  * Decode the passkey credential JSON before sanitizing its values, instead of running sanitize_text_field() over the raw JSON string.
+  * Fixed an issue with how passkey credentials are processed to prevent potential data loss.
 
 #### 1.1.2 / 2026-08-12
 
